@@ -9,6 +9,8 @@ import my.test.chat.repository.ChatPermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ChatMessageService {
     @Autowired
@@ -23,5 +25,9 @@ public class ChatMessageService {
         }
         var message = ChatMessage.builder().room(room).user(user).text(text).build();
         return chatMessageRepository.save(message);
+    }
+    
+    public List<ChatMessage> getMessages() {
+        return (List<ChatMessage>) chatMessageRepository.findAll();
     }
 }
