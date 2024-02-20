@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class ChatUserDTO {
-    private Long id;
+    private Long user;
     private String username;
     private LocalDateTime created_at;
 
     public ChatUserDTO(ChatUser user) {
-        this.id = user.getId();
+        this.user = user.getId();
         this.username = user.getName();
         this.created_at = user.getCreated();
     }

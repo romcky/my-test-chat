@@ -28,5 +28,7 @@ public class ChatRoom {
     private LocalDateTime created;
     @OneToMany(mappedBy = "room")
     private List<ChatPermission> permissions;
+    @OneToMany(mappedBy = "room")
+    private List<ChatMessage> messages;
 }
 
