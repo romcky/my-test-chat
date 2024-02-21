@@ -23,11 +23,4 @@ public class ChatUserController {
         return Map.of("id", user.getId());
     }
 
-    @GetMapping("/users")
-    public List<ChatUserDTO> fetchUsers() {
-        return chatUserService.getUsers()
-                .stream()
-                .map(ChatUserDTO::new)
-                .collect(Collectors.toList());
-    }
 }

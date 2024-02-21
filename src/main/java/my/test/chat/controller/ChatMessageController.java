@@ -1,15 +1,16 @@
 package my.test.chat.controller;
 
 import my.test.chat.dto.ChatMessageDTO;
+import my.test.chat.dto.ChatRoomDTO;
 import my.test.chat.service.ChatMessageService;
 import my.test.chat.service.ChatRoomService;
 import my.test.chat.service.ChatUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,11 +37,15 @@ public class ChatMessageController {
         return Map.of("id", message.getId());
     }
 
-    @GetMapping("/messages")
-    public List<ChatMessageDTO> fetchMessages() {
-        return chatMessageService.getMessages()
+    @PostMapping("messages/get")
+    public List<ChatMessageDTO> getMessagesByChat(@RequestBody ChatRoomDTO roomDTO) {
+        var chat = chatRoomService.findRoomById(roomDTO.getChat()).orElseThrow(
+                //no such chat exception
+        );
+        return chat.getMessages()
                 .stream()
                 .map(ChatMessageDTO::new)
+                .sorted(Comparator.comparing(ChatMessageDTO::getCreated_at))
                 .collect(Collectors.toList());
     }
 }

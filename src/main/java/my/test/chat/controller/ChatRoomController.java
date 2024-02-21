@@ -6,7 +6,6 @@ import my.test.chat.entity.ChatPermission;
 import my.test.chat.service.ChatRoomService;
 import my.test.chat.service.ChatUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,18 +24,10 @@ public class ChatRoomController {
 
     @PostMapping("chats/add")
     public Map<String, Long> addRoom(@RequestBody ChatRoomDTO roomDTO) {
-        var roomName = roomDTO.getName();
+        var roomName = roomDTO.getChatname();
         var roomUsers = chatUserService.getUsers(roomDTO.getUsers());
         var room = chatRoomService.addRoom(roomName, roomUsers);
         return Map.of("id", room.getId());
-    }
-
-    @GetMapping("chats")
-    public List<ChatRoomDTO> fetchRooms() {
-        return chatRoomService.getRooms()
-                .stream()
-                .map(ChatRoomDTO::new)
-                .collect(Collectors.toList());
     }
 
     @PostMapping("chats/get")

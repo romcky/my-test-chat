@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class ChatRoomDTO {
-    private Long id;
-    private String name;
+    private Long chat;
+    private String chatname;
     private LocalDateTime created_at;
     private List<Long> users;
 
     public ChatRoomDTO(ChatRoom room) {
-        this.id = room.getId();
-        this.name = room.getName();
+        this.chat = room.getId();
+        this.chatname = room.getName();
         this.created_at = room.getCreated();
         this.users = room.getPermissions()
                 .stream()
