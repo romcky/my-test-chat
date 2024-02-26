@@ -2,8 +2,13 @@ package my.test.chat.service;
 
 import lombok.NonNull;
 import my.test.chat.entity.ChatUser;
+import my.test.chat.exception.ChatException;
 import my.test.chat.repository.ChatUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +21,11 @@ public class ChatUserService {
 
     public ChatUser addUser(@NonNull String userName) {
         var user = ChatUser.builder().name(userName).build();
-        return chatUserRepository.save(user);
+        try {
+            return chatUserRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new ChatException("No unique username, such username already exists");
+        }
     }
 
     public List<ChatUser> getUsers() {

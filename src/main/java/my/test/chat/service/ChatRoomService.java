@@ -5,9 +5,12 @@ import my.test.chat.entity.ChatMessage;
 import my.test.chat.entity.ChatPermission;
 import my.test.chat.entity.ChatRoom;
 import my.test.chat.entity.ChatUser;
+import my.test.chat.exception.ChatException;
 import my.test.chat.repository.ChatPermissionRepository;
 import my.test.chat.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,11 +26,15 @@ public class ChatRoomService {
     private ChatPermissionRepository chatPermissionRepository;
 
     public ChatRoom addRoom(@NonNull String roomName, @NonNull List<ChatUser> users) {
-        var room = chatRoomRepository.save(ChatRoom.builder().name(roomName).build());
-        users.stream()
-                .map(user -> ChatPermission.builder().room(room).user(user).build())
-                .forEach(chatPermissionRepository::save);
-        return room;
+        try {
+            var room = chatRoomRepository.save(ChatRoom.builder().name(roomName).build());
+            users.stream()
+                    .map(user -> ChatPermission.builder().room(room).user(user).build())
+                    .forEach(chatPermissionRepository::save);
+            return room;
+        } catch (DataIntegrityViolationException e) {
+            throw new ChatException("No unique name, such name already exists");
+        }
     }
 
     public List<ChatRoom> getRooms() {

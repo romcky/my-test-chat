@@ -2,6 +2,7 @@ package my.test.chat.controller;
 
 import my.test.chat.dto.ChatMessageDTO;
 import my.test.chat.dto.ChatRoomDTO;
+import my.test.chat.exception.ChatException;
 import my.test.chat.service.ChatMessageService;
 import my.test.chat.service.ChatRoomService;
 import my.test.chat.service.ChatUserService;
@@ -28,10 +29,10 @@ public class ChatMessageController {
     public Map<String, Long> addMessage(@RequestBody ChatMessageDTO messageDTO) {
         var text = messageDTO.getText();
         var user = chatUserService.findUserById(messageDTO.getAuthor()).orElseThrow(
-                //no such user
+                () -> new ChatException("No such user, wrong id")
         );
         var room = chatRoomService.findRoomById(messageDTO.getChat()).orElseThrow(
-                //no such room
+                () -> new ChatException("No such chat, wrong id")
         );
         var message = chatMessageService.addMessage(text, room, user);
         return Map.of("id", message.getId());
@@ -40,7 +41,7 @@ public class ChatMessageController {
     @PostMapping("messages/get")
     public List<ChatMessageDTO> getMessagesByChat(@RequestBody ChatRoomDTO roomDTO) {
         var chat = chatRoomService.findRoomById(roomDTO.getChat()).orElseThrow(
-                //no such chat exception
+                () -> new ChatException("No such chat, wrong id")
         );
         return chat.getMessages()
                 .stream()
